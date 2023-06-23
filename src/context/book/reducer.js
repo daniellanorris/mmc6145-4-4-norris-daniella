@@ -1,43 +1,37 @@
-import { ADD_BOOK, REMOVE_BOOK, SEARCH_BOOKS } from './actions.js'
+import { ADD_BOOK, REMOVE_BOOK, SEARCH_BOOKS } from './actions';
 
-// TODO: import actions and implement reducer for each action
-export default function reducer(initialState, action) {
-  switch (action.type) {
+export default function reducer(initialState, {action, payload}) {
+  switch (action) {
     case ADD_BOOK:
-      const addedBook = action.payload
-      saveToLocalStorage(addedBook)
+      const saveLocal = [...initialState.favoriteBooks, payload]
+      saveToLocalStorage(saveLocal)
       return {
-        ...initialState, 
-        favoriteBooks : [...state.favoriteBooks, addedBook]
+        ...initialState,
+        favoriteBooks: [...initialState.favoriteBooks, payload]
       };
-      
-    case REMOVE_BOOK: 
-    bookIdToRemove = action.payload;
-    const removedBook = initialState.favoriteBooks.filter(
-      (book) => book.id !== bookIdToRemove
-    )
-    saveToLocalStorage(removedBook)
 
-    return {
-      ...initialState,
-      favoriteBooks: removedBook
-    };
-  case SEARCH_BOOKS:
-    const searchResults = action.payload
-    // TODO: Handle the SEARCH_BOOKS action and return the updated state
-    return {
-      ...initialState,
-      bookSearchResults: searchResults,
-    };
+    case REMOVE_BOOK:
+      const updatedBooks = initialState.favoriteBooks.filter(
+        (book) => book.id !== payload
+      );
+      saveToLocalStorage(updatedBooks)
 
-    default: 
-    return initialState
-    };
-  
+      return {
+        ...initialState,
+        favoriteBooks: updatedBooks
+      };
 
+    case SEARCH_BOOKS:
+      return {
+        ...initialState,
+        bookSearchResults: payload
+      };
+
+    default:
+      return initialState;
+  }
 }
 
-// This helper function stores the favoriteBook state in localStorage as a string
 function saveToLocalStorage(favBooks) {
-  localStorage.setItem('favoriteBooks', JSON.stringify(favBooks))
+  localStorage.setItem('favoriteBooks', JSON.stringify(favBooks));
 }
